@@ -1,21 +1,26 @@
 version: "3.8"
 services:
     gvm:
-        image: netizensoc/gvm-scanner:[latest|dev] # Latest is the stable image. Dev is the development un-stable image.
+        image: netizensoc/gvm-scanner:latest # Latest is the stable image. Dev is the development un-stable image.
         volumes:
           - gvm-data:/data              # DO NOT MODIFY
         environment:
-          - USERNAME="admin"            # You can leave the username as admin or change to what ever you like
-          - PASSWORD="admin"            # Please use 10+ Characters consisting of numbers, lower & uppercase letters, and a special character.
+          - USERNAME="openvas"            # You can leave the username as admin or change to what ever you like
+          - PASSWORD="openvasadmin"            # Please use 10+ Characters consisting of numbers, lower & uppercase letters, and a special character.
           - HTTPS=true                  # DO NOT MODIFY
-          - TZ="ETC"                    # Change to your corresponding timezone
-          - SSHD=true                   # Mark true if using a Remote Scanner. Mark false if using a standalone operation.
+          - TZ="IST"                    # Change to your corresponding timezone
+          - SSHD=false                   # Mark true if using a Remote Scanner. Mark false if using a standalone operation.
           - DB_PASSWORD="dbpassword"    # Run the following command to generate "openssl rand -hex 40"
         ports:
-          - "443:9392"  # Web interface
-          - "5432:5432" # Access PostgreSQL database from external tools
-          - "2222:22"   # SSH for remote sensors. You can remove if you don't plan on using remote scanners.
+          - "8080:9392"  # Web interface
+          #- "5432:5432" # Access PostgreSQL database from external tools
+          #- "2222:22"   # SSH for remote sensors. You can remove if you don't plan on using remote scanners.
           # - "9390:9390" # For GVM API Access. Leave commented if you do not plan on using the API for external web application access.
-        restart: unless-stopped # Remove if your using for penetration testing or one-time scans. Only use if using for production/continuous scanning
+        #restart: unless-stopped # Remove if your using for penetration testing or one-time scans. Only use if using for production/continuous scanning
 volumes:
-    gvm-data:
+  gvm-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /root/gvm-docker/gvm-data
